@@ -22,20 +22,29 @@ sanitize_banned = leak, address
 OBJ = obj
 SRC = src
 BIN = bin
-OUT = $(BIN)/mandelbrot
+OUT = $(BIN)/prog
 LST = lst
+
+DEDLIST_SRC = dedlist_src
+DEDLIST_OBJ = dedlist_obj
 
 SOURCES 		= $(wildcard $(SRC)/*.cpp)
 OBJFILES 		= $(patsubst $(SRC)/%,$(OBJ)/%,$(SOURCES:.cpp=.o))
 
-OPTIMIZE		= -O3
-BASE_LINK		= $(CC) -o $@ $(OPTIMIZE) $(CFLAGS) $^
-BASE_CMPL		= $(CC) -c $(OPTIMIZE) $(CFLAGS) -march=native -o $@ $<
+SOURCES_DEDLIST  = $(wildcard $(DEDLIST_SRC)/*.cpp)
+OBJFILES_DEDLIST = $(patsubst $(DEDLIST_SRC)/%,$(DEDLIST_OBJ)/%,$(SOURCES_DEDLIST:.cpp=.o))
 
-$(OUT) : $(OBJFILES)
+OPTIMIZE		= 
+BASE_LINK		= $(CC) -o $@ $(OPTIMIZE) $(CFLAGS) $^
+BASE_CMPL		= $(CC) -c $(OPTIMIZE) $(CFLAGS) -I $(DEDLIST_SRC) -o $@ $<
+
+$(OUT) : $(OBJFILES) $(OBJFILES_DEDLIST)
 	$(BASE_LINK)
 
-$(OBJ)/%.o : $(SRC)/%.cpp $(SRC)/%.h
+$(OBJ)/%.o : $(SRC)/%.cpp
+	@$(BASE_CMPL)
+
+$(DEDLIST_OBJ)/%.o : $(DEDLIST_SRC)/%.cpp
 	@$(BASE_CMPL)
 
 .PHONY: clean

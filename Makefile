@@ -36,7 +36,7 @@ OBJFILES_DEDLIST = $(patsubst $(DEDLIST_SRC)/%,$(DEDLIST_OBJ)/%,$(SOURCES_DEDLIS
 
 OPTIMIZE		= 
 BASE_LINK		= $(CC) -o $@ $(OPTIMIZE) $(CFLAGS) $^
-BASE_CMPL		= $(CC) -c $(OPTIMIZE) $(CFLAGS) -I $(DEDLIST_SRC) -o $@ $<
+BASE_CMPL		= $(CC) -c $(OPTIMIZE) $(CFLAGS) -masm=intel -I $(DEDLIST_SRC) -o $@ $<
 
 $(OUT) : $(OBJFILES) $(OBJFILES_DEDLIST)
 	$(BASE_LINK)

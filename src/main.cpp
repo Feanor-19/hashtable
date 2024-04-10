@@ -4,6 +4,7 @@
 #include "settings.h"
 #include "hashfuncs.h"
 #include "hashtable.h"
+#include "input.h"
 
 // - Входной файл должен состоять из слов, содержащих только английские буквы, каждое на своей строке
 // - значения дисперсий печатаются в stdout
@@ -26,22 +27,19 @@ int main(int argc, char **argv)
 
     // ---------------------------------------------------------------
 
-    Hashtable ht = {};
-    hashtable_ctor( &ht, 20, hash_const );
+    WordsList words_list = {};
+    WordsList_ctor( &words_list, settings.inp_file );
 
-    hashtable_insert( &ht, "hello" );
-    hashtable_insert( &ht, "word" );
-    hashtable_insert( &ht, "hello" );
-    hashtable_insert( &ht, "aaa" );
-    hashtable_insert( &ht, "aaa" );
+    // Hashtable ht = {};
+    // hashtable_ctor( &ht, DEFAULT_HASH_TABLE_SIZE, hash_const );
 
-    size_t distr[20] = {};
-    hashtable_get_distribution( &ht, distr );
-    for (int i = 0; i < 20; i++)
-    {
-        printf("%lu ", distr[i]);
-    }
-    printf("\n");
 
-    hashtable_dtor( &ht );
+
+    // size_t distr[DEFAULT_HASH_TABLE_SIZE] = {};
+    // hashtable_get_distribution( &ht, distr );
+
+    
+
+    // hashtable_dtor( &ht );
+    WordsList_dtor( &words_list );
 }

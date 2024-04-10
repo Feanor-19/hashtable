@@ -14,7 +14,7 @@ void parse_cmd_args( int argc, char **argv, Settings *settings )
         // getopt_long stores the option index here
         int option_index = 0;
 
-        c = getopt_long(argc, argv, "t", long_options, &option_index);
+        c = getopt_long(argc, argv, "i:o:s:", long_options, &option_index);
 
         // Detect the end of the options
         if (c == -1)

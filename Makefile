@@ -51,6 +51,10 @@ $(DEDLIST_OBJ)/%.o : $(DEDLIST_SRC)/%.cpp
 clean:
 	rm -f $(OBJFILES) $(OUT)
 
+.PHONY: clean_out
+clean_out:
+	rm -f out/*
+
 .PHONY: run
 run:
-	$(OUT)
+	$(OUT) $(ARGS)

@@ -26,9 +26,9 @@ hash_t hash_word_len( const uint8_t *data, size_t data_size )
 hash_t hash_checksum( const uint8_t *data, size_t data_size )
 {
     hash_t res = 0;
-    while ( data_size )
+    while ( data_size-- )
     {
-        res += *data;
+        res += *(data++);
     }
 
     return res;

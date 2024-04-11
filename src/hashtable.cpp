@@ -84,7 +84,7 @@ HashtableStatus hashtable_insert( Hashtable *ht, const char *word )
 {
     assert(ht);
 
-    hash_t hash = ht->hash_func( (const uint8_t*)&word, sizeof(word) );
+    hash_t hash = ht->hash_func( (const uint8_t*)word, strlen(word) );
     hash = hash % ht->size;
 
     Dedlist *dedlist_ptr = &ht->table[hash];

@@ -119,12 +119,12 @@ DedlistStatusCode dedlist_get_size( Dedlist *dedlist_ptr, size_t *ret )
 
 size_t dedlist_get_next_anchor( Dedlist *dedlist_ptr, size_t curr_anchor )
 {
-    return dedlist_ptr->nodes[curr_anchor].prev;
+    return (size_t) dedlist_ptr->nodes[curr_anchor].prev;
 }
 
 size_t dedlist_get_prev_anchor( Dedlist *dedlist_ptr, size_t curr_anchor )
 {
-    return dedlist_ptr->nodes[curr_anchor].next;
+    return (size_t) dedlist_ptr->nodes[curr_anchor].next;
 }
 
 bool dedlist_is_head( Dedlist *dedlist, size_t anchor )

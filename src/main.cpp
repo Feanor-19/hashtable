@@ -5,12 +5,13 @@
 #include "hashfuncs.h"
 #include "hashtable.h"
 #include "input.h"
+#include "testing.h"
 
 // - Входной файл должен состоять из слов, содержащих только английские буквы, каждое на своей строке
 // - значения дисперсий печатаются в stdout
 // - всегда тестятся все хэш-фии, нет возможности задать конкретные
 // - задается размер хэш-таблицы, по умолчанию тот, который хорошо подходит для итоговых данных
-// - задается директория (можно с '/' в конце, можно без, оба варианта должны обрабатываться), в которой будут
+// - задается директория (обязательно с '/' в конце!!!), в которой будут
 // созданы файлы для каждой хэш-фии, содержащие распределение заполненности хэш-таблицы (для гистограмм)
 
 int main(int argc, char **argv)
@@ -28,18 +29,23 @@ int main(int argc, char **argv)
     // ---------------------------------------------------------------
 
     WordsList words_list = {};
-    WordsList_ctor( &words_list, settings.inp_file );
+    WordsListStatus wl_status = WordsList_ctor( &words_list, settings.inp_file );
+    if ( wl_status != WL_STATUS_OK )
+    {
+        printf( "ERROR: Something went wrong during reading input file. "
+                "TestingStatus value: %d.\n", wl_status);
+        WordsList_dtor(&words_list);
+        exit(wl_status);
+    }
 
-    // Hashtable ht = {};
-    // hashtable_ctor( &ht, DEFAULT_HASH_TABLE_SIZE, hash_const );
+    TestingStatus t_status = run_all_hash_func_tests( words_list, settings.out_dir, settings.hash_table_size );
+    if ( t_status != TESTING_STATUS_OK )
+    {
+        printf("ERROR: Something went wrong during testing. TestingStatus value: %d.\n", t_status);
+        WordsList_dtor(&words_list); // REVIEW - странный вопрос: а нужно ли морочиться с освобождением памяти,
+                                     // если мы все равно завершаемся уже?
+        exit(t_status);
+    }
 
-
-
-    // size_t distr[DEFAULT_HASH_TABLE_SIZE] = {};
-    // hashtable_get_distribution( &ht, distr );
-
-    
-
-    // hashtable_dtor( &ht );
     WordsList_dtor( &words_list );
 }

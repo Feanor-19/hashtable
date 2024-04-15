@@ -76,3 +76,54 @@ hash_t hash_ror_xor( const uint8_t *data, size_t data_size )
 
     return hash;
 }
+
+hash_t hash_murmur3( const uint8_t *data, size_t data_size )
+{
+    const unsigned int m = 0x5bd1e995;
+    const unsigned int seed = 0;
+    const int r = 24;
+
+    unsigned int hash = seed ^ (uint) data_size;
+
+    unsigned int k = 0;
+
+    while (data_size >= 4)
+    {
+        k  = data[0];
+        k |= data[1] << 8;
+        k |= data[2] << 16;
+        k |= data[3] << 24;
+
+        k *= m;
+        k ^= k >> r;
+        k *= m;
+
+        hash *= m;
+        hash ^= k;
+
+        data += 4;
+        data_size -= 4;
+    }
+
+    switch (data_size)
+    {
+        case 3:
+        hash ^= data[2] << 16;
+        // fall through
+        case 2:
+        hash ^= data[1] << 8;
+        // fall through
+        case 1:
+        hash ^= data[0];
+        hash *= m;
+        // fall through
+        default:
+        break;
+    };
+
+    hash ^= hash >> 13;
+    hash *= m;
+    hash ^= hash >> 15;
+
+    return hash;
+}

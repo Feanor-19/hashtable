@@ -15,6 +15,7 @@ hash_t hash_rol_xor( const uint8_t *data, size_t data_size );
 
 hash_t hash_ror_xor( const uint8_t *data, size_t data_size );
 
+hash_t hash_murmur3( const uint8_t *data, size_t data_size );
 
 
 struct HashFuncDef
@@ -30,7 +31,8 @@ const HashFuncDef HASH_FUNCS_LIST[] =
     { hash_word_len,            "hash_word_len" },
     { hash_checksum,            "hash_checksum" },
     { hash_rol_xor,             "hash_rol_xor" },
-    { hash_ror_xor,             "hash_ror_xor" }
+    { hash_ror_xor,             "hash_ror_xor" },
+    { hash_murmur3,             "hash_murmur3" }
 };
 
 const size_t HASH_FUNCS_COUNT = sizeof(HASH_FUNCS_LIST)/sizeof(HASH_FUNCS_LIST[0]);

@@ -11,11 +11,10 @@ else:
 
 inp = open(filename)
 input_data = list(map(int, inp.readlines()))
-
 plt.stairs(values=input_data, fill=True)
 plt.grid(axis='y', alpha=0.75)
 plt.xlabel('Hash')
 plt.ylabel('Load')
-plt.title(filename)
+plt.title(f"Hash func: {filename}, Variance: {np.var(input_data)}")
 
 plt.show()

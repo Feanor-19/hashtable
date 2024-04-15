@@ -1,15 +1,16 @@
 import re
 import sys
 
-if len(sys.argv) != 2:
-    print("No file given!")
+if len(sys.argv) != 3:
+    print("Wrong (or empty) args!")
     exit()
 else:
-    filename = sys.argv[1]
+    inp_filename = sys.argv[1]
+    out_filename = sys.argv[2]
 
-inp = open(filename)
+inp = open(inp_filename)
 
-out = open("ready_" + filename, "w")
+out = open(out_filename, "w")
 
 for line in inp:
     words = [x.lower() for x in re.findall(r'\w+', line) ]

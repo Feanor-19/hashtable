@@ -1,6 +1,7 @@
 #include "settings.h"
 
 #include <assert.h>
+#include <unistd.h>
 
 void parse_cmd_args( int argc, char **argv, Settings *settings )
 {
@@ -54,7 +55,8 @@ void parse_cmd_args( int argc, char **argv, Settings *settings )
 
 SettingsStatus check_settings( const Settings *settings )
 {
-    // TODO удостовериться что существует входной файл (существование папки не требуется)
+    if ( access(settings->inp_file, R_OK) != 0 )
+        return SETS_STATUS_ERROR_INP_FILE_DOES_NOT_EXIST;
 
     return SETS_STATUS_OK;
 }

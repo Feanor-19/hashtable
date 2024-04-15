@@ -105,6 +105,30 @@ HashtableStatus hashtable_insert( Hashtable *ht, const char *word )
     return HT_STATUS_OK;
 }
 
+uint64_t hashtable_find( Hashtable *ht, const char *word )
+{
+    assert(ht);
+    assert(word);
+
+    hash_t hash = ht->hash_func( (const uint8_t*)word, strlen(word) );
+    hash = hash % ht->size;
+
+    Dedlist *dedlist_ptr = &ht->table[hash];
+
+    int list_ind = find_wordcount( dedlist_ptr, word );
+    if (list_ind == -1)
+    {
+        return 0;
+    }
+    else
+    {
+        WordCount curr_wc = {};
+
+        dedlist_get_by_anchor( dedlist_ptr, (size_t) list_ind, &curr_wc );
+        return curr_wc.repeats;
+    }
+}
+
 HashtableStatus hashtable_get_distribution( Hashtable *ht, size_t *distr )
 {
     assert(ht);

@@ -28,6 +28,8 @@ struct Distribution
 const mode_t DEFAULT_FILE_MODE = 0777;
 const size_t FILENAME_LEN      = 100;
 
+const hash_func_t PERF_TEST_HASH_FUNC = hash_murmur3;
+
 
 //! @brief Loads given 'input' into a hashtable of given 'ht_size', which uses 
 //! specified 'hash_func', and then returns the resulting distribution (in 'out_distr').
@@ -42,5 +44,9 @@ TestingStatus run_all_hash_func_tests( WordsList words_list, const char *out_dir
 TestingStatus Distribution_ctor( Distribution *distr, size_t distr_size );
 
 void Distribution_dtor( Distribution *distr );
+
+//! @brief Inserts all words from 'words_list' into a hashtable of size 'ht_size', and then patiently 
+//! searches for every word from 'search_list' in it.
+TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list, size_t ht_size );
 
 #endif /* TESTING_H */

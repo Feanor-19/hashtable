@@ -11,25 +11,6 @@ inline void check_out_dir( const char *out_dir )
     mkdir( out_dir, DEFAULT_FILE_MODE );
 }
 
-//! @brief Computes variance of given hashtable's distribution.
-// inline double compute_variance( Distribution distr ) //TODO - IN PYTHON
-// {
-//     size_t sum_x     = 0;
-//     size_t sum_x_sqr = 0;
-//     for (size_t i = 0; i < distr.size; i++)
-//     {
-//         size_t elem = distr.distr[i]; 
-        
-//         sum_x     += elem;
-//         sum_x_sqr += elem*elem;
-//     }
-
-//     double mean_x     = (double) sum_x     / (double) distr.size;
-//     double mean_x_sqr = (double) sum_x_sqr / (double) distr.size;
-
-//     return mean_x_sqr - mean_x;
-// }
-
 inline void fill_filename( char *file_name, const char *out_dir, const char *func_name )
 {
     assert(file_name);
@@ -142,4 +123,29 @@ void Distribution_dtor( Distribution *distr )
 
     free(distr->distr);
     distr->size = 0;
+}
+
+#define UNUSED(x) x = x;
+TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list, size_t ht_size )
+{
+    Hashtable ht = {};
+    HashtableStatus ht_status = hashtable_ctor( &ht, ht_size, PERF_TEST_HASH_FUNC );
+    if (ht_status != HT_STATUS_OK)
+        return TESTING_STATUS_ERR_HASHTABLE_INTERNAL_ERR;
+
+    for (size_t i = 0; i < words_list.words_n; i++)
+    {
+        hashtable_insert( &ht, words_list.words[i] );
+    }
+
+    volatile uint64_t res = 0;
+    for ( size_t i = 0; i < search_list.words_n; i++ )
+    {
+        res = hashtable_find( &ht, search_list.words[i] );
+    }
+    UNUSED(res);
+
+    hashtable_dtor(&ht);
+
+    return TESTING_STATUS_OK;
 }

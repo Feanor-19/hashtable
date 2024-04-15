@@ -15,7 +15,7 @@ void parse_cmd_args( int argc, char **argv, Settings *settings )
         // getopt_long stores the option index here
         int option_index = 0;
 
-        c = getopt_long(argc, argv, "i:o:s:", long_options, &option_index);
+        c = getopt_long(argc, argv, SHORT_OPTIONS, long_options, &option_index);
 
         // Detect the end of the options
         if (c == -1)
@@ -23,6 +23,10 @@ void parse_cmd_args( int argc, char **argv, Settings *settings )
 
         switch (c)
         {
+            case ID_TEST_SEARCH:
+                settings->search_file = optarg;
+                settings->test_search = true;
+                break;
             case ID_INP_FILE:
                 settings->inp_file = optarg;
                 break;
@@ -58,6 +62,9 @@ SettingsStatus check_settings( const Settings *settings )
     if ( access(settings->inp_file, R_OK) != 0 )
         return SETS_STATUS_ERROR_INP_FILE_DOES_NOT_EXIST;
 
+    if ( settings->test_search && access(settings->search_file, R_OK) != 0 )
+        return SETS_STATUS_ERROR_INP_FILE_DOES_NOT_EXIST;
+
     return SETS_STATUS_OK;
 }
 
@@ -77,11 +84,26 @@ void print_settings_error( SettingsStatus status )
 
 void print_settings( const Settings *settings )
 {
-    printf( "Applied settings:\n"
-            "\tInput file: %s\n"
-            "\tOutput dir: %s\n"
-            "\tHashtable's size: %lu\n",
-            settings->inp_file,
-            settings->out_dir,
-            settings->hash_table_size);
+    if ( settings->test_search )
+    {
+        printf( "Applied settings:\n"
+                "\tMode: testing search performance.\n"
+                "\tInput file: %s\n"
+                "\tSearch file: %s\n"
+                "\tHashtable's size: %lu\n",
+                settings->inp_file,
+                settings->search_file,
+                settings->hash_table_size);
+    }
+    else
+    {
+        printf( "Applied settings:\n"
+                "\tMode: testing hash-funcs.\n"
+                "\tInput file: %s\n"
+                "\tOutput dir: %s\n"
+                "\tHashtable's size: %lu\n",
+                settings->inp_file,
+                settings->out_dir,
+                settings->hash_table_size);
+    }
 }

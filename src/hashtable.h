@@ -27,6 +27,10 @@ HashtableStatus hashtable_dtor( Hashtable *ht );
 
 HashtableStatus hashtable_insert( Hashtable *ht, const char *word );
 
+//! @brief Finds given word in the hashtable and returns its number of repeats.
+//! If the word isn't found in the hashtable, 0 is returned.
+uint64_t hashtable_find( Hashtable *ht, const char *word );
+
 //! @brief Fills given array 'distr' (which must have size equal to hashtable's size)
 //! with lenghts of corresponding lists.
 HashtableStatus hashtable_get_distribution( Hashtable *ht, size_t *distr );

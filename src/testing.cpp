@@ -17,7 +17,7 @@ inline void fill_filename( char *file_name, const char *out_dir, const char *fun
     assert(out_dir);
     assert(func_name);
 
-    strncpy( file_name, out_dir, FILENAME_LEN );
+    strncpy( file_name, out_dir, FILENAME_LEN - 1 );
     
     size_t out_dir_name_len = strlen(out_dir);
     if (file_name[out_dir_name_len-1] != '/')

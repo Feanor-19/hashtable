@@ -34,7 +34,7 @@ OBJFILES 		= $(patsubst $(SRC)/%,$(OBJ)/%,$(SOURCES:.cpp=.o))
 SOURCES_DEDLIST  = $(wildcard $(DEDLIST_SRC)/*.cpp)
 OBJFILES_DEDLIST = $(patsubst $(DEDLIST_SRC)/%,$(DEDLIST_OBJ)/%,$(SOURCES_DEDLIST:.cpp=.o))
 
-OPTIMIZE		= 
+OPTIMIZE		= -O3
 BASE_LINK		= $(CC) -o $@ $(OPTIMIZE) $(CFLAGS) $^
 BASE_CMPL		= $(CC) -c $(OPTIMIZE) $(CFLAGS) -masm=intel -I $(DEDLIST_SRC) -o $@ $<
 
@@ -62,6 +62,14 @@ run:
 .PHONY: make_asm
 make_asm:
 	$(CC) -S -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(ARGS)
+
+CALLGRIND_OUT = callgrind/out
+CALLGRIND_FLAGS = --cache-sim=yes --branch-sim=yes --callgrind-out-file=$(CALLGRIND_OUT)
+
+.PHONY: perf_test
+perf_test:
+	$(CC) $(OPTIMIZE) -masm=intel -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST)
+	valgrind --tool=callgrind $(CALLGRIND_FLAGS) $(OUT) -t $(ARGS)
 
 .PHONY: gen_hash_funcs_lst
 gen_hash_funcs_lst:

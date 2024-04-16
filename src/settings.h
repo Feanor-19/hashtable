@@ -13,11 +13,11 @@ enum LongOptionsIds
     ID_HASHTABLE_SIZE   = 's',
 };
 
-const char * const SHORT_OPTIONS = "t:i:o:s:";
+const char * const SHORT_OPTIONS = "t::i:o:s:";
 
 struct option const long_options[] = 
 {
-    {"test-search", required_argument, 0, ID_TEST_SEARCH    },
+    {"test-search", optional_argument, 0, ID_TEST_SEARCH    },
     {"input",       required_argument, 0, ID_INP_FILE       },
     {"output",      required_argument, 0, ID_OUT_DIR        },
     {"table-size",  required_argument, 0, ID_HASHTABLE_SIZE },

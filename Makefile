@@ -59,6 +59,10 @@ clean_out:
 run:
 	$(OUT) $(ARGS)
 
+.PHONY: make_asm
+make_asm:
+	$(CC) -S -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(ARGS)
+
 .PHONY: gen_hash_funcs_lst
 gen_hash_funcs_lst:
 	g++ $(OPTIMIZE) -I $(DEDLIST_SRC) -S -masm=intel -o lst/hashfuncs.asm src/hashfuncs.cpp

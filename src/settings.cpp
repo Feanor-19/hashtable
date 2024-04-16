@@ -24,7 +24,7 @@ void parse_cmd_args( int argc, char **argv, Settings *settings )
         switch (c)
         {
             case ID_TEST_SEARCH:
-                settings->search_file = optarg;
+                if (optarg) settings->search_file = optarg;
                 settings->test_search = true;
                 break;
             case ID_INP_FILE:

@@ -64,10 +64,10 @@ make_asm:
 	$(CC) -S -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(ARGS)
 
 CALLGRIND_OUT = callgrind/out
-CALLGRIND_FLAGS = --cache-sim=yes --branch-sim=yes --callgrind-out-file=$(CALLGRIND_OUT)
+CALLGRIND_FLAGS = --cache-sim=yes --branch-sim=yes --collect-jumps=yes --dump-instr=yes --callgrind-out-file=$(CALLGRIND_OUT)
 
-.PHONY: perf_test
-perf_test:
+.PHONY: callgrind
+callgrind:
 	$(CC) $(OPTIMIZE) -masm=intel -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST)
 	valgrind --tool=callgrind $(CALLGRIND_FLAGS) $(OUT) -t $(ARGS)
 

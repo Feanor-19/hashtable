@@ -18,7 +18,7 @@
 struct WordCount
 {
     const char* word = NULL;
-    uint64_t repeats = 0;
+    uint32_t repeats = 0;
 };
 
 typedef WordCount Elem_t;
@@ -59,7 +59,7 @@ struct DedlistNode
     ptrdiff_t next = 0;
     ptrdiff_t prev = -1;
 };
-
+const size_t ttt = sizeof(DedlistNode);
 #ifdef DEDLIST_DO_DUMP
 struct DedlistOrigInfo
 {

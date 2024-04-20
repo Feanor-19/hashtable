@@ -36,9 +36,9 @@ hash_t hash_checksum( const uint8_t *data, size_t data_size )
 
 inline hash_t rol( hash_t hash )
 {
-    asm volatile( "rol %0, 1" 
-                : "=r" (hash) 
-                : "0" (hash) );
+    // asm volatile( "rol %0, 1" 
+    //             : "=r" (hash) 
+    //             : "0" (hash) );
     
     return hash;
 }
@@ -58,9 +58,9 @@ hash_t hash_rol_xor( const uint8_t *data, size_t data_size )
 
 inline hash_t ror( hash_t hash )
 {
-    asm volatile( "ror %0, 1" 
-                : "=r" (hash) 
-                : "0" (hash) );
+    // asm volatile( "ror %0, 1" 
+    //             : "=r" (hash) 
+    //             : "0" (hash) );
     
     return hash;
 }

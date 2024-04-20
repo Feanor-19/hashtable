@@ -1,7 +1,7 @@
 #ifndef HASHTABLE_COMMON
 #define HASHTABLE_COMMON
 
-#ifdef _DEBUG
+#ifndef _DEBUG
 #define NDEBUG
 #endif
 

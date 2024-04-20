@@ -29,7 +29,7 @@ const mode_t DEFAULT_FILE_MODE = 0777;
 const size_t FILENAME_LEN      = 100;
 
 const hash_func_t PERF_TEST_HASH_FUNC = hash_murmur3;
-const size_t DEFAULT_NUM_OF_ITERS     = 10;  
+const size_t DEFAULT_NUM_OF_ITERS     = 100;  
 
 
 //! @brief Loads given 'input' into a hashtable of given 'ht_size', which uses 

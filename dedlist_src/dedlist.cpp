@@ -90,9 +90,11 @@ DedlistStatusCode dedlist_get_by_anchor( Dedlist *dedlist_ptr, size_t anchor, El
     DEDLIST_SELFCHECK(dedlist_ptr);
     assert(ret);
 
+#ifdef _DEBUG
     if (!is_anchor_valid_(dedlist_ptr, anchor))
         return DEDLIST_STATUS_ERROR_INVALID_ANCHOR;
-
+#endif /* _DEBUG */
+    
     *ret = dedlist_ptr->nodes[anchor].data;
 
     return DEDLIST_STATUS_OK;

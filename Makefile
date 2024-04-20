@@ -63,13 +63,18 @@ run:
 make_asm:
 	$(CC) -S -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(ARGS)
 
-CALLGRIND_OUT = callgrind/out
-CALLGRIND_FLAGS = --cache-sim=yes --branch-sim=yes --collect-jumps=yes --dump-instr=yes --callgrind-out-file=$(CALLGRIND_OUT)
+GPROF_RES_DIR = gprof_res
+GPROF_RES     = $(GPROF_RES_DIR)/result_$(shell date +"%Y-%m-%-d-%H-%M-%S").txt
 
-.PHONY: callgrind
-callgrind:
-	$(CC) $(OPTIMIZE) -masm=intel -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST)
-	valgrind --tool=callgrind $(CALLGRIND_FLAGS) $(OUT) -t $(ARGS)
+.PHONY: gprof
+gprof:
+	$(CC) $(OPTIMIZE) -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST) -pg
+	$(OUT) -t
+	gprof $(OUT) > $(GPROF_RES) 
+
+.PHONY: clean_gprof_res
+clean_gprof_res:
+	rm -f $(GPROF_RES_DIR)/*
 
 .PHONY: gen_hash_funcs_lst
 gen_hash_funcs_lst:

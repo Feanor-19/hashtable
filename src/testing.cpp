@@ -138,12 +138,13 @@ TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list,
         hashtable_insert( &ht, words_list.words[i] );
     }
 
+    //volatile uint64_t res = 0;
     for (size_t iter = 0; iter < DEFAULT_NUM_OF_ITERS; iter++)
     {
         for ( size_t i = 0; i < search_list.words_n; i++ )
         {
-            uint64_t res = hashtable_find( &ht, search_list.words[i] );
-            UNUSED(res);
+            hashtable_find( &ht, search_list.words[i] );
+            //UNUSED(res);
         }
     }
 

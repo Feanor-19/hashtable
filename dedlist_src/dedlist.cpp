@@ -1,14 +1,12 @@
+#include "dedlist.h"
+#include "dedlist_utils.h"
+
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
 
-#include "dedlist_utils.h"
-
-#include "dedlist.h"
-
-// TODO - помечать все что надо static
 inline int is_anchor_valid_( Dedlist *dedlist_ptr, size_t anchor )
 {
     if ( anchor < dedlist_ptr->capacity )

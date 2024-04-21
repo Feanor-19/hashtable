@@ -1,9 +1,9 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <getopt.h>
-
 #include "common.h"
+
+#include <getopt.h>
 
 enum LongOptionsIds
 {

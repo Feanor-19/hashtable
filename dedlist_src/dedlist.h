@@ -1,11 +1,11 @@
 #ifndef DEDLIST_H
 #define DEDLIST_H
 
+#include "../src/defines.h"
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
-
-#include "../src/defines.h"
 
 /*
     AVAILABLE DEFINES:

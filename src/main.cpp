@@ -1,12 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-
+#include "common.h"
 #include "settings.h"
 #include "hashfuncs.h"
 #include "hashtable.h"
 #include "input.h"
 #include "testing.h"
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 int main(int argc, char **argv)

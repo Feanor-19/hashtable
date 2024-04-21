@@ -5,6 +5,8 @@
 #define NDEBUG
 #endif
 
+#define NDEBUG
+
 #include <stdlib.h>
 #include <stdint.h>
 

@@ -1,5 +1,4 @@
 #include "hashfuncs.h"
-
 #include "string.h"
 
 #define UNUSED(x) (x=x)

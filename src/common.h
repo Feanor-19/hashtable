@@ -1,11 +1,12 @@
 #ifndef HASHTABLE_COMMON
 #define HASHTABLE_COMMON
 
+#include "dedlist.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "dedlist.h"
 
 
 typedef uint64_t hash_t;

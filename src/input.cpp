@@ -33,7 +33,7 @@ inline WordsListStatus fill_words ( WordsList *wl )
             words_n++;
     }
 
-    wl->words = (const char **) calloc( words_n + 1, sizeof( const char * ) );
+    wl->words = (const char **) calloc( words_n + 2, sizeof( const char * ) );
     if (!wl->words)
         return WL_STATUS_ERR_MEM_ALLOC;
 
@@ -73,7 +73,7 @@ WordsListStatus WordsList_ctor( WordsList *wl, const char *inp_filename )
         return WL_STATUS_ERR_FILE_NOT_FOUND;
     }
 
-    char *data = (char *) calloc( file_size, sizeof(char) );
+    char *data = (char *) calloc( file_size + 1, sizeof(char) );
     if (!data)
     {
         fclose(file_ptr);

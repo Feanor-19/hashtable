@@ -1,10 +1,6 @@
 #ifndef HASHTABLE_COMMON
 #define HASHTABLE_COMMON
 
-#ifndef _DEBUG
-#define NDEBUG
-#endif
-
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

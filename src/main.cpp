@@ -7,6 +7,8 @@
 #include "input.h"
 #include "testing.h"
 
+#include <string.h>
+
 int main(int argc, char **argv)
 {
     Settings settings = {};
@@ -44,6 +46,7 @@ int main(int argc, char **argv)
         }
 
         run_search_perf_test( words_list, search_list, settings.hash_table_size );
+        WordsList_dtor( &search_list );
     }
     else
     {

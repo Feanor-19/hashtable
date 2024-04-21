@@ -93,7 +93,7 @@ hash_t hash_murmur3( const uint8_t *data, size_t data_size )
         k |= data[1] << 8;
         k |= data[2] << 16;
         k |= data[3] << 24;
-
+        //REVIEW - непонятные варнинги
         k *= m;
         k ^= k >> r;
         k *= m;
@@ -108,10 +108,10 @@ hash_t hash_murmur3( const uint8_t *data, size_t data_size )
     switch (data_size)
     {
         case 3:
-        hash ^= data[2] << 16;
+        hash ^= data[2] << 16U;
         // fall through
         case 2:
-        hash ^= data[1] << 8;
+        hash ^= data[1] << 8U;
         // fall through
         case 1:
         hash ^= data[0];

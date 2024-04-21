@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include "../src/defines.h"
+
 /*
     AVAILABLE DEFINES:
 
@@ -14,15 +16,6 @@
 */
 //#define DEDLIST_DO_DUMP
 //#define DEDLIST_SHOW_DUMP_IMG
-
-struct WordCount
-{
-    const char* word = NULL;
-    uint32_t repeats = 0;
-};
-
-typedef WordCount Elem_t;
-const Elem_t ELEM_T_DEFAULT_VALUE = { NULL, 0 };
 
 #ifdef DEDLIST_DO_DUMP
 inline void dedlist_print_elem_t(FILE *stream, Elem_t value)

@@ -1,5 +1,6 @@
 CC=g++
 
+SAN = -fsanitize=alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,nonnull-attribute,null,object-size,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr,leak,address
 CFLAGS  =	-D _DEBUG -ggdb3 -std=c++17 -Wall -Wextra -Weffc++ 									\
 			-Waggressive-loop-optimizations -Wc++14-compat -Wmissing-declarations 				\
 			-Wcast-align -Wcast-qual -Wchar-subscripts -Wconditionally-supported 				\
@@ -14,10 +15,8 @@ CFLAGS  =	-D _DEBUG -ggdb3 -std=c++17 -Wall -Wextra -Weffc++ 									\
 			-Wno-missing-field-initializers -Wno-narrowing -Wno-old-style-cast -Wno-varargs 	\
 			-Wstack-protector -fcheck-new -fsized-deallocation -fstack-protector 				\
 			-fstrict-overflow -flto-odr-type-merging -fno-omit-frame-pointer					\
-			-Wstack-usage=8192 -pie -fPIE -Werror=vla 
+			-Wstack-usage=8192 -pie -fPIE -Werror=vla $(SAN)
 			
-SAN = -fsanitize=alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,nonnull-attribute,null,object-size,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
-sanitize_banned = leak, address
 
 OBJ = obj
 SRC = src
@@ -61,7 +60,7 @@ run:
 
 .PHONY: make_asm
 make_asm:
-	$(CC) -S -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(ARGS)
+	$(CC) -S -g -no-pie -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(ARGS)
 
 GPROF_RES_DIR = gprof_res
 GPROF_RES     = $(GPROF_RES_DIR)/result_$(shell date +"%Y-%m-%-d-%H-%M-%S").txt

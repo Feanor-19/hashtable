@@ -111,6 +111,7 @@ uint64_t hashtable_find( Hashtable *ht, const char *word )
     assert(ht);
     assert(word);
 
+    /* TODO MY_strlen() <-> strlen() */
     hash_t hash = ht->hash_func( (const uint8_t*)word, strlen(word) );
     // performance optimization, using the best one
     // hash_t hash = hash_murmur3( (const uint8_t*)word, strlen(word) );

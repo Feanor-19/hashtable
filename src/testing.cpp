@@ -125,7 +125,6 @@ void Distribution_dtor( Distribution *distr )
     distr->size = 0;
 }
 
-#define UNUSED(x) x = x;
 TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list, size_t ht_size )
 {
     Hashtable ht = {};
@@ -138,15 +137,15 @@ TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list,
         hashtable_insert( &ht, words_list.words[i] );
     }
 
-    //volatile uint64_t res = 0;
+    uint64_t res = 0;
     for (size_t iter = 0; iter < DEFAULT_NUM_OF_ITERS; iter++)
     {
         for ( size_t i = 0; i < search_list.words_n; i++ )
         {
-            hashtable_find( &ht, search_list.words[i] );
-            //UNUSED(res);
+            res += hashtable_find( &ht, search_list.words[i] );
         }
     }
+    printf("Search perforamnce test dummy variable value: %lu.\n", res);
 
     hashtable_dtor(&ht);
 

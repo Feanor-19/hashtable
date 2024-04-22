@@ -68,17 +68,24 @@ gen_hash_funcs_lst:
 
 .PHONY: make_asm
 make_asm:
-	$(CC) -S -g -no-pie -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(ARGS)
+	$(CC) -S -g -no-pie -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(FILE)
 
 
-
-.PHONY: perf
-perf:
+.PHONY: for_prof
+for_prof:
 	$(CC) $(OPTIMIZE) -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST)
+
+.PHONY: perf_record
+perf_record: for_prof
 	sudo perf record $(OUT) -t
-	sudo perf report 
 
+.PHONY: perf_report
+perf_report:
+	sudo perf report
 
+.PHONY: perf_annotate
+perf_annotate:
+	sudo perf annotate
 
 
 

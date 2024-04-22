@@ -58,23 +58,40 @@ clean_out:
 run:
 	$(OUT) $(ARGS)
 
+
+
+.PHONY: gen_hash_funcs_lst
+gen_hash_funcs_lst:
+	g++ $(OPTIMIZE) -I $(DEDLIST_SRC) -S -masm=intel -o lst/hashfuncs.asm src/hashfuncs.cpp
+
+
+
 .PHONY: make_asm
 make_asm:
 	$(CC) -S -g -no-pie -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(ARGS)
 
+
+
+.PHONY: perf
+perf:
+	$(CC) $(OPTIMIZE) -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST)
+	sudo perf record $(OUT) -t
+	sudo perf report 
+
+
+
+
+
 GPROF_RES_DIR = gprof_res
 GPROF_RES     = $(GPROF_RES_DIR)/result_$(shell date +"%Y-%m-%-d-%H-%M-%S").txt
+GPROF_FLAGS   = 
 
 .PHONY: gprof
 gprof:
 	$(CC) $(OPTIMIZE) -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST) -pg
 	$(OUT) -t
-	gprof $(OUT) > $(GPROF_RES) 
+	gprof $(GPROF_FLAGS) $(OUT) > $(GPROF_RES) 
 
-.PHONY: clean_gprof_res
-clean_gprof_res:
+.PHONY: clean_gprof_out
+clean_gprof_out:
 	rm -f $(GPROF_RES_DIR)/*
-
-.PHONY: gen_hash_funcs_lst
-gen_hash_funcs_lst:
-	g++ $(OPTIMIZE) -I $(DEDLIST_SRC) -S -masm=intel -o lst/hashfuncs.asm src/hashfuncs.cpp

@@ -3,6 +3,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include <immintrin.h>
 
 HashtableStatus hashtable_ctor( Hashtable *ht, size_t ht_size, hash_func_t hash_func )
 {
@@ -56,9 +57,17 @@ HashtableStatus hashtable_dtor( Hashtable *ht )
     return HT_STATUS_OK;
 }
 
+//! @brief Returns true if given blocks are equal, false otherwise.
+inline bool opt_256_memcmp( __m256i a, __m256i b )
+{
+    __m256i cmp_res = _mm256_cmpeq_epi8( a, b );
+    int mask = _mm256_movemask_epi8( cmp_res );
+    return (mask == 0xFF);
+}
+
 //! @brief Returns index (anchor) of wordcount with given 'word',
 //! or -1 if such a wordcount is not found in the 'dedlist'
-inline int find_wordcount( Dedlist *dedlist, const char *word )
+inline int find_wordcount( Dedlist *dedlist, __m256i search_word_aligned )
 {
     size_t list_size = 0;
     dedlist_get_size( dedlist, &list_size );
@@ -72,7 +81,8 @@ inline int find_wordcount( Dedlist *dedlist, const char *word )
         WordCount wc = {};
         dedlist_get_by_anchor(dedlist, curr, &wc);
 
-        if ( strcmp( word, wc.word ) == 0 )
+        // TODO - надо еще поменять в самом WordCount!!!
+        if ( opt_256_memcmp( search_word_aligned,  ) == 0 )
             return (int) curr;
 
         curr = dedlist_get_prev_anchor( dedlist, curr );

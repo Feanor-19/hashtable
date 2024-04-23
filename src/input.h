@@ -3,12 +3,19 @@
 
 #include "common.h"
 
+#include <immintrin.h>
+
 struct WordsList
 {
-    const char **words  = NULL;
-    size_t words_n      = 0;
-    char *buf           = NULL;
+    char *buf           = NULL; //< buf as read from file (only '\n' -> '\0')
     size_t buf_size     = 0;
+
+    const char **words  = NULL; //< pointers to words' first chars in 'buf' 
+    size_t words_n      = 0;
+
+    __m256i *words_aligned = NULL; //< stores copies of words in blocks
+                                   //TODO - нужен ли '\0' в конце таких блоков?
+    //NOTE - 'words_aligned' size equals 'words_n'.
 };
 
 enum WordsListStatus

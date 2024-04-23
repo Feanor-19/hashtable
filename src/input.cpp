@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <memory.h>
 
 //! @brief Writes file's size into size_ptr. If error occurs,
 // corresponding status code is returned.
@@ -54,6 +55,24 @@ inline WordsListStatus fill_words ( WordsList *wl )
     return WL_STATUS_OK;
 }
 
+inline WordsListStatus fill_words_aligned( WordsList *wl )
+{
+    assert(wl);
+
+    wl->words_aligned = (__m256i*) calloc( wl->words_n, sizeof(__m256i) );
+    if ( !wl->words_aligned )
+        return WL_STATUS_ERR_MEM_ALLOC;
+
+    for (size_t i = 0; i < wl->words_n; i++)
+    {
+        memcpy( wl->words_aligned + i, wl->words[i], strlen(wl->words[i]) );
+        //NOTE - это можно сделать чуть хитрее и не вызывать strlen, но
+        // данный сценарий не требует оптимизации загрузки таблицы
+    }
+
+    return WL_STATUS_OK;
+}
+
 WordsListStatus WordsList_ctor( WordsList *wl, const char *inp_filename )
 {
     assert( wl );
@@ -96,12 +115,19 @@ WordsListStatus WordsList_ctor( WordsList *wl, const char *inp_filename )
     if (status != WL_STATUS_OK)
         return status;
 
+    status = fill_words_aligned( wl );
+    if (status != WL_STATUS_OK)
+        return status;
+
     return WL_STATUS_OK;
 }
 
 void WordsList_dtor( WordsList *wl )
 {
     assert( wl );
+
+    free(wl->words_aligned);
+    wl->words_aligned = NULL;
 
     free(wl->words);
     wl->words = NULL;

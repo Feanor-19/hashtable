@@ -88,7 +88,7 @@ TestingStatus run_hash_func_test( hash_func_t hash_func, WordsList input,
 
     for (size_t i = 0; i < input.words_n; i++)
     {
-        hashtable_insert( &ht, input.words[i] );
+        hashtable_insert( &ht, &input.words_aligned[i] );
     }
 
     ht_status = hashtable_get_distribution( &ht, out_distr->distr );
@@ -134,7 +134,7 @@ TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list,
 
     for (size_t i = 0; i < words_list.words_n; i++)
     {
-        hashtable_insert( &ht, words_list.words[i] );
+        hashtable_insert( &ht, &words_list.words_aligned[i] );
     }
 
     uint64_t res = 0;
@@ -142,10 +142,10 @@ TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list,
     {
         for ( size_t i = 0; i < search_list.words_n; i++ )
         {
-            res += hashtable_find( &ht, search_list.words[i] );
+            res += hashtable_find( &ht, &search_list.words_aligned[i] );
         }
     }
-    printf("Search perforamnce test dummy variable value: %lu.\n", res);
+    printf("Search performance test dummy variable value: %lu.\n", res);
 
     hashtable_dtor(&ht);
 

@@ -7,10 +7,11 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <immintrin.h>
 
 struct WordCount
 {
-    const char* word = NULL;
+    const __m256i* word = NULL;
     uint32_t repeats = 0;
 };
 

@@ -67,7 +67,7 @@ inline bool opt_256_memcmp( __m256i a, __m256i b )
 
 //! @brief Returns index (anchor) of wordcount with given 'word',
 //! or -1 if such a wordcount is not found in the 'dedlist'
-inline int find_wordcount( Dedlist *dedlist, __m256i search_word_aligned )
+inline int find_wordcount( Dedlist *dedlist, const __m256i *search_word_aligned )
 {
     size_t list_size = 0;
     dedlist_get_size( dedlist, &list_size );
@@ -82,7 +82,7 @@ inline int find_wordcount( Dedlist *dedlist, __m256i search_word_aligned )
         dedlist_get_by_anchor(dedlist, curr, &wc);
 
         // TODO - надо еще поменять в самом WordCount!!!
-        if ( opt_256_memcmp( search_word_aligned,  ) == 0 )
+        if ( opt_256_memcmp( *search_word_aligned, *(wc.word) ) == 0 )
             return (int) curr;
 
         curr = dedlist_get_prev_anchor( dedlist, curr );
@@ -91,11 +91,11 @@ inline int find_wordcount( Dedlist *dedlist, __m256i search_word_aligned )
     return -1;
 }
 
-HashtableStatus hashtable_insert( Hashtable *ht, const char *word )
+HashtableStatus hashtable_insert( Hashtable *ht, const __m256i *word )
 {
     assert(ht);
 
-    hash_t hash = ht->hash_func( (const uint8_t*)word, strlen(word) );
+    hash_t hash = hash_murmur3( (const uint8_t*)word, sizeof( *word ) );
     hash = hash % ht->size;
 
     Dedlist *dedlist_ptr = &ht->table[hash];
@@ -116,15 +116,13 @@ HashtableStatus hashtable_insert( Hashtable *ht, const char *word )
     return HT_STATUS_OK;
 }
 
-uint64_t hashtable_find( Hashtable *ht, const char *word )
+uint64_t hashtable_find( Hashtable *ht, const __m256i *word )
 {
     assert(ht);
     assert(word);
 
-    /* TODO MY_strlen() <-> strlen() */
-    hash_t hash = ht->hash_func( (const uint8_t*)word, strlen(word) );
-    // performance optimization, using the best one
-    // hash_t hash = hash_murmur3( (const uint8_t*)word, strlen(word) );
+    hash_t hash = hash_murmur3( (const uint8_t*)word, sizeof(*word) );
+
     hash = hash % ht->size;
 
     Dedlist *dedlist_ptr = &ht->table[hash];

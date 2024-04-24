@@ -14,7 +14,6 @@ struct WordsList
     size_t words_n      = 0;
 
     __m256i *words_aligned = NULL; //< stores copies of words in blocks
-                                   //TODO - нужен ли '\0' в конце таких блоков?
     //NOTE - 'words_aligned' size equals 'words_n'.
 };
 

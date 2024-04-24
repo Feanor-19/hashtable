@@ -81,7 +81,7 @@ perf_record: for_prof
 
 .PHONY: perf_report
 perf_report:
-	sudo perf report
+	sudo perf report -n
 
 .PHONY: perf_annotate
 perf_annotate:

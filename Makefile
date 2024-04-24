@@ -68,12 +68,12 @@ gen_hash_funcs_lst:
 
 .PHONY: make_asm
 make_asm:
-	$(CC) -S -g -no-pie -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(FILE)
+	$(CC) -S -g -march=native -masm=intel -I $(DEDLIST_SRC) $(OPTIMIZE) $(FILE)
 
 
 .PHONY: for_prof
 for_prof:
-	$(CC) $(OPTIMIZE) -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST)
+	$(CC) $(OPTIMIZE) -g -march=native -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST)
 
 .PHONY: perf_record
 perf_record: for_prof

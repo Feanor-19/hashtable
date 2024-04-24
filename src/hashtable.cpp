@@ -62,7 +62,7 @@ inline bool opt_256_memcmp( __m256i a, __m256i b )
 {
     __m256i cmp_res = _mm256_cmpeq_epi8( a, b );
     int mask = _mm256_movemask_epi8( cmp_res );
-    return (mask == 0xFF);
+    return ((uint) mask == 0xFFFFFFFF);
 }
 
 //! @brief Returns index (anchor) of wordcount with given 'word',
@@ -81,8 +81,7 @@ inline int find_wordcount( Dedlist *dedlist, const __m256i *search_word_aligned 
         WordCount wc = {};
         dedlist_get_by_anchor(dedlist, curr, &wc);
 
-        // TODO - надо еще поменять в самом WordCount!!!
-        if ( opt_256_memcmp( *search_word_aligned, *(wc.word) ) == 0 )
+        if ( opt_256_memcmp( *search_word_aligned, *(wc.word) ) )
             return (int) curr;
 
         curr = dedlist_get_prev_anchor( dedlist, curr );

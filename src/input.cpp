@@ -59,9 +59,11 @@ inline WordsListStatus fill_words_aligned( WordsList *wl )
 {
     assert(wl);
 
-    wl->words_aligned = (__m256i*) calloc( wl->words_n, sizeof(__m256i) );
+    wl->words_aligned = (__m256i*) aligned_alloc( sizeof(__m256i), wl->words_n * sizeof(__m256i) );
     if ( !wl->words_aligned )
         return WL_STATUS_ERR_MEM_ALLOC;
+
+    memset( wl->words_aligned, 0, wl->words_n * sizeof(__m256i) );
 
     for (size_t i = 0; i < wl->words_n; i++)
     {

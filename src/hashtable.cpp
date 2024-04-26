@@ -76,8 +76,6 @@ inline int find_wordcount( Dedlist *dedlist, const __m256i *search_word_aligned 
 
     size_t curr = dedlist_get_head_ind( dedlist );
 
-
-
     do
     {
         WordCount wc = {};

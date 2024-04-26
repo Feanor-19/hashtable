@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <assert.h>
 
 /*
     AVAILABLE DEFINES:
@@ -193,8 +194,6 @@ DedlistStatusCode dedlist_change( Dedlist *dedlist_ptr, size_t anchor, Elem_t ne
 
 DedlistStatusCode dedlist_delete( Dedlist *dedlist_ptr, size_t anchor );
 
-DedlistStatusCode dedlist_get_by_anchor( Dedlist *dedlist_ptr, size_t anchor, Elem_t *ret);
-
 DedlistStatusCode dedlist_get_head( Dedlist *dedlist_ptr, Elem_t *ret);
 
 DedlistStatusCode dedlist_get_tail( Dedlist *dedlist_ptr, Elem_t *ret);
@@ -240,5 +239,58 @@ void dedlist_print_verify_res_(FILE *stream, int verify_res);
 size_t dedlist_get_head_ind( Dedlist *dedlist_ptr );
 
 size_t dedlist_get_tail_ind( Dedlist *dedlist_ptr );
+
+// --------------------------------------------------------------------------------------------
+// inline functions
+
+//! @note ONLY FOR INTERNAL USE!
+inline int is_anchor_valid_( Dedlist *dedlist_ptr, size_t anchor )
+{
+    if ( anchor < dedlist_ptr->capacity )
+    {
+        if ( !is_node_free_(dedlist_ptr, anchor) )
+            return 1;
+        else
+            return 0;
+    }
+
+    return 0;
+}
+
+inline DedlistStatusCode dedlist_get_by_anchor( Dedlist *dedlist_ptr, size_t anchor, Elem_t *ret)
+{
+    DEDLIST_SELFCHECK(dedlist_ptr);
+    assert(ret);
+
+#ifdef _DEBUG
+    if (!is_anchor_valid_(dedlist_ptr, anchor))
+        return DEDLIST_STATUS_ERROR_INVALID_ANCHOR;
+#endif /* _DEBUG */
+    
+    *ret = dedlist_ptr->nodes[anchor].data;
+
+    return DEDLIST_STATUS_OK;
+}
+
+inline size_t dedlist_get_head_ind( Dedlist *dedlist_ptr )
+{
+    DEDLIST_SELFCHECK(dedlist_ptr);
+
+    return (size_t) dedlist_ptr->nodes[0].next;
+}
+
+inline DedlistStatusCode dedlist_get_size( Dedlist *dedlist_ptr, size_t *ret )
+{
+    DEDLIST_SELFCHECK( dedlist_ptr );
+
+    *ret =  dedlist_ptr->size;
+
+    return DEDLIST_STATUS_OK;
+}
+
+inline size_t dedlist_get_prev_anchor( Dedlist *dedlist_ptr, size_t curr_anchor )
+{
+    return (size_t) dedlist_ptr->nodes[curr_anchor].next;
+}
 
 #endif

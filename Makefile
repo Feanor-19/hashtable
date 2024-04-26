@@ -77,28 +77,18 @@ for_prof:
 
 .PHONY: perf_record
 perf_record: for_prof
+	cpufreq-info | grep "current policy"
 	sudo perf record $(OUT) -t
 
 .PHONY: perf_report
 perf_report:
 	sudo perf report -n
 
-.PHONY: perf_annotate
-perf_annotate:
-	sudo perf annotate
+.PHONY: show_freq_policy
+show_freq_policy:
+	cpufreq-info | grep "current policy"
 
-
-
-GPROF_RES_DIR = gprof_res
-GPROF_RES     = $(GPROF_RES_DIR)/result_$(shell date +"%Y-%m-%-d-%H-%M-%S").txt
-GPROF_FLAGS   = 
-
-.PHONY: gprof
-gprof:
-	$(CC) $(OPTIMIZE) -g -no-pie -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST) -pg
-	$(OUT) -t
-	gprof $(GPROF_FLAGS) $(OUT) > $(GPROF_RES) 
-
-.PHONY: clean_gprof_out
-clean_gprof_out:
-	rm -f $(GPROF_RES_DIR)/*
+MAX_FREQ = 1.6
+.PHONY: set_max_freq
+set_max_freq:
+	cpupower frequency-set -u $(MAX_FREQ)GHz

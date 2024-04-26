@@ -140,6 +140,7 @@ TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list,
     uint64_t res = 0;
     for (size_t iter = 0; iter < DEFAULT_NUM_OF_ITERS; iter++)
     {
+        res = 0;
         for ( size_t i = 0; i < search_list.words_n; i++ )
         {
             res += hashtable_find( &ht, &search_list.words_aligned[i] );

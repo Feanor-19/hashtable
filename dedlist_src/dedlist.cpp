@@ -7,19 +7,6 @@
 #include <unistd.h>
 #include <time.h>
 
-inline int is_anchor_valid_( Dedlist *dedlist_ptr, size_t anchor )
-{
-    if ( anchor < dedlist_ptr->capacity )
-    {
-        if ( !is_node_free_(dedlist_ptr, anchor) )
-            return 1;
-        else
-            return 0;
-    }
-
-    return 0;
-}
-
 DedlistStatusCode dedlist_insert(   Dedlist *dedlist_ptr,
                                     size_t anchor,
                                     Elem_t value,
@@ -83,21 +70,6 @@ DedlistStatusCode dedlist_delete(   Dedlist *dedlist_ptr,
     return DEDLIST_STATUS_OK;
 }
 
-DedlistStatusCode dedlist_get_by_anchor( Dedlist *dedlist_ptr, size_t anchor, Elem_t *ret)
-{
-    DEDLIST_SELFCHECK(dedlist_ptr);
-    assert(ret);
-
-#ifdef _DEBUG
-    if (!is_anchor_valid_(dedlist_ptr, anchor))
-        return DEDLIST_STATUS_ERROR_INVALID_ANCHOR;
-#endif /* _DEBUG */
-    
-    *ret = dedlist_ptr->nodes[anchor].data;
-
-    return DEDLIST_STATUS_OK;
-}
-
 DedlistStatusCode dedlist_get_head( Dedlist *dedlist_ptr, Elem_t *ret)
 {
     return dedlist_get_by_anchor( dedlist_ptr, dedlist_get_head_ind(dedlist_ptr), ret );
@@ -108,23 +80,9 @@ DedlistStatusCode dedlist_get_tail( Dedlist *dedlist_ptr, Elem_t *ret)
     return dedlist_get_by_anchor( dedlist_ptr, dedlist_get_tail_ind(dedlist_ptr), ret );
 }
 
-DedlistStatusCode dedlist_get_size( Dedlist *dedlist_ptr, size_t *ret )
-{
-    DEDLIST_SELFCHECK( dedlist_ptr );
-
-    *ret =  dedlist_ptr->size;
-
-    return DEDLIST_STATUS_OK;
-}
-
 size_t dedlist_get_next_anchor( Dedlist *dedlist_ptr, size_t curr_anchor )
 {
     return (size_t) dedlist_ptr->nodes[curr_anchor].prev;
-}
-
-size_t dedlist_get_prev_anchor( Dedlist *dedlist_ptr, size_t curr_anchor )
-{
-    return (size_t) dedlist_ptr->nodes[curr_anchor].next;
 }
 
 bool dedlist_is_head( Dedlist *dedlist, size_t anchor )
@@ -169,13 +127,6 @@ DedlistStatusCode dedlist_delete_tail( Dedlist *dedlist_ptr )
     DEDLIST_SELFCHECK(dedlist_ptr);
 
     return dedlist_delete(dedlist_ptr, dedlist_get_tail_ind(dedlist_ptr));
-}
-
-size_t dedlist_get_head_ind( Dedlist *dedlist_ptr )
-{
-    DEDLIST_SELFCHECK(dedlist_ptr);
-
-    return (size_t) dedlist_ptr->nodes[0].next;
 }
 
 size_t dedlist_get_tail_ind( Dedlist *dedlist_ptr )
@@ -503,14 +454,6 @@ inline DedlistStatusCode create_tmp_dot_file_( const char *dot_file_path, FILE *
 
     return DEDLIST_STATUS_OK;
 }
-
-// TODO - в другой файл? что делать с такой большой функцией?
-// если в другой файл, тогда dedlist будет уже из более чем двух файлов,
-// а это неудобно подключать... можно попробовать разобраться с библиотеками
-
-// посмотреть про команду arr; про header: подтягивать вместе с архивом
-// из условной своей стандартной библиотеки, почитать, поискать
-// для intellisense: прописать в настройках путь в "своей библиотеке"
 
 inline DedlistStatusCode write_dot_file_for_dump_(  FILE *dot_file,
                                                     Dedlist *dedlist_ptr,

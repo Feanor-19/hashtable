@@ -76,6 +76,8 @@ inline int find_wordcount( Dedlist *dedlist, const __m256i *search_word_aligned 
 
     size_t curr = dedlist_get_head_ind( dedlist );
 
+
+
     do
     {
         WordCount wc = {};
@@ -122,10 +124,11 @@ uint64_t hashtable_find( Hashtable *ht, const __m256i *word )
 
     hash_t hash = hash_murmur3( (const uint8_t*)word, sizeof(*word) );
 
-    hash = hash % ht->size;
+    hash = hash % DEFAULT_HASH_TABLE_SIZE;
 
     Dedlist *dedlist_ptr = &ht->table[hash];
 
+    // TODO - разыменовать указатель word здесь в локальную переменную.
     int list_ind = find_wordcount( dedlist_ptr, word );
     if (list_ind == -1)
     {

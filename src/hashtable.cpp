@@ -14,28 +14,12 @@ HashtableStatus hashtable_ctor( Hashtable *ht, size_t ht_size, hash_func_t hash_
     if (ht->table || ht->size || ht->hash_func)
         return HT_STATUS_ERROR_ATTEMPT_TO_CTOR_NON_EMPTY;
 
-    ht->table = (Dedlist *) calloc( ht_size, sizeof(Dedlist) );
+    ht->table = (HashtableElem *) calloc( ht_size, sizeof(HashtableElem) );
     if (!ht->table)
         return HT_STATUS_ERROR_MEM_ALLOC;
 
     ht->size        = ht_size;
     ht->hash_func   = hash_func;
-
-    DedlistStatusCode ded_code = DEDLIST_STATUS_OK;
-    for (hash_t i = 0; i < ht_size; i++)
-    {
-        ded_code = dedlist_ctor( &ht->table[i], DEFAULT_DEDLIST_SIZE );
-        if (ded_code != DEDLIST_STATUS_OK)
-            break;
-    }    
-
-    if (ded_code != DEDLIST_STATUS_OK)
-    {
-        for (hash_t i = 0; i < ht_size; i++)  
-            dedlist_dtor( &ht->table[i] );
-        
-        return HT_STATUS_ERROR_DEDLIST_INTERNAL_ERROR;
-    }
 
     return HT_STATUS_OK;
 }
@@ -43,12 +27,6 @@ HashtableStatus hashtable_ctor( Hashtable *ht, size_t ht_size, hash_func_t hash_
 HashtableStatus hashtable_dtor( Hashtable *ht )
 {
     assert(ht);
-
-    if (ht->table)
-    {
-        for (hash_t i = 0; i < ht->size; i++)  
-            dedlist_dtor( &ht->table[i] );
-    }
 
     free(ht->table);
     ht->size = 0;
@@ -65,29 +43,47 @@ inline bool opt_256_memcmp( __m256i a, __m256i b )
     return ((uint) mask == 0xFFFFFFFF);
 }
 
-//! @brief Returns index (anchor) of wordcount with given 'word',
+//! @brief Returns index of wordcount with given 'word',
 //! or -1 if such a wordcount is not found in the 'dedlist'
-inline int find_wordcount( Dedlist *dedlist, const __m256i *search_word_aligned )
+inline int find_wordcount( HashtableElem *ht_elem, const __m256i *search_word_aligned )
 {
-    size_t list_size = 0;
-    dedlist_get_size( dedlist, &list_size );
-    if ( list_size == 0 )
-        return -1;
+    assert(ht_elem);
+    assert(search_word_aligned);
 
-    size_t curr = dedlist_get_head_ind( dedlist );
-
-    do
+    for ( size_t ind = 0; ind < HT_ELEM_ARRAY_LEN; ind++ )
     {
-        WordCount wc = {};
-        dedlist_get_by_anchor(dedlist, curr, &wc);
+        if ( opt_256_memcmp( ht_elem->words[ind], *search_word_aligned ) )
+            return ind;
+    }
 
-        if ( opt_256_memcmp( *search_word_aligned, *(wc.word) ) )
-            return (int) curr;
-
-        curr = dedlist_get_prev_anchor( dedlist, curr );
-    } while ( curr != 0 );
-    
     return -1;
+}
+
+//! @brief Returns true if given word is free (empty).
+//! @attention THIS FUNCTION CONSIDERS THAT EMPTY WORD BEGINS
+//! WITH ZERO-CHAR ('\0')!
+inline bool is_word_free( const __m256i *word )
+{
+    return *((char*) word) == 0;
+}
+
+//! @brief Appends given element in the first from the left free "words" element
+//! and sets corresponding element in "repeats" to 1.
+inline HashtableStatus ht_elem_append( HashtableElem *ht_elem, const __m256i *word )
+{
+    assert(ht_elem);
+    assert(word);
+
+    for ( size_t ind = 0; ind < HT_ELEM_ARRAY_LEN; ind++ )
+    {
+        if ( is_word_free( &ht_elem->words[ind] ) )
+        {
+            ht_elem->words  [ind] = *word;
+            ht_elem->repeats[ind] = 1;
+            return HT_STATUS_OK;
+        }
+    }
+    return HT_STATUS_ERROR_HT_ELEM_LIST_IS_FULL;
 }
 
 HashtableStatus hashtable_insert( Hashtable *ht, const __m256i *word )
@@ -97,22 +93,20 @@ HashtableStatus hashtable_insert( Hashtable *ht, const __m256i *word )
     hash_t hash = hash_murmur3( (const uint8_t*)word, sizeof( *word ) );
     hash = hash % ht->size;
 
-    Dedlist *dedlist_ptr = &ht->table[hash];
+    HashtableElem *ht_elem = &ht->table[hash];
 
-    int list_ind = find_wordcount( dedlist_ptr, word );
+    int list_ind = find_wordcount( ht_elem, word );
+    HashtableStatus ht_status = HT_STATUS_OK;
     if (list_ind == -1)
     {
-        dedlist_push_head( dedlist_ptr, { word, 1 } );
+        ht_status = ht_elem_append( ht_elem, word );
     }
     else
     {
-        WordCount curr_wc = {};
-
-        dedlist_get_by_anchor( dedlist_ptr, (size_t) list_ind, &curr_wc );
-        dedlist_change( dedlist_ptr, (size_t) list_ind, {curr_wc.word, curr_wc.repeats + 1} );
+        (ht_elem->repeats[list_ind])++;
     }
 
-    return HT_STATUS_OK;
+    return ht_status;
 }
 
 uint64_t hashtable_find( Hashtable *ht, const __m256i *word )
@@ -124,20 +118,30 @@ uint64_t hashtable_find( Hashtable *ht, const __m256i *word )
 
     hash = hash % DEFAULT_HASH_TABLE_SIZE;
 
-    Dedlist *dedlist_ptr = &ht->table[hash];
+    HashtableElem *ht_elem = &ht->table[hash];
 
-    int list_ind = find_wordcount( dedlist_ptr, word );
+    int list_ind = find_wordcount( ht_elem, word );
     if (list_ind == -1)
     {
         return 0;
     }
     else
     {
-        WordCount curr_wc = {};
-
-        dedlist_get_by_anchor( dedlist_ptr, (size_t) list_ind, &curr_wc );
-        return curr_wc.repeats;
+        return ht_elem->repeats[list_ind];
     }
+}
+
+inline uint8_t get_ht_elem_len( const HashtableElem *ht_elem )
+{
+    assert(ht_elem);
+
+    for ( size_t ind = 0; ind < HT_ELEM_ARRAY_LEN; ind++ )
+    {
+        if ( is_word_free( &ht_elem->words[ind] ) )
+            return ind;
+    }
+
+    return 0xFF;
 }
 
 HashtableStatus hashtable_get_distribution( Hashtable *ht, size_t *distr )
@@ -146,7 +150,7 @@ HashtableStatus hashtable_get_distribution( Hashtable *ht, size_t *distr )
 
     for (hash_t hash = 0; hash < ht->size; hash++)
     {
-        distr[hash] = ht->table[hash].size;
+        distr[hash] = get_ht_elem_len( &ht->table[hash] );
     }
 
     return HT_STATUS_OK;

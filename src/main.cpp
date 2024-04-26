@@ -45,7 +45,12 @@ int main(int argc, char **argv)
             exit(sl_status);
         }
 
-        run_search_perf_test( words_list, search_list, settings.hash_table_size );
+        TestingStatus status = run_search_perf_test( words_list, search_list, settings.hash_table_size );
+        if ( status != TESTING_STATUS_OK )
+        {
+            printf( "ERROR: Something went wrong during testing search performance.\n"
+                    "TestingStatus value: %d.\n", status );
+        }
         WordsList_dtor( &search_list );
     }
     else

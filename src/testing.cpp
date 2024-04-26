@@ -132,9 +132,12 @@ TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list,
     if (ht_status != HT_STATUS_OK)
         return TESTING_STATUS_ERR_HASHTABLE_INTERNAL_ERR;
 
+    HashtableStatus ht_status = HT_STATUS_OK;
     for (size_t i = 0; i < words_list.words_n; i++)
     {
-        hashtable_insert( &ht, &words_list.words_aligned[i] );
+        ht_status = hashtable_insert( &ht, &words_list.words_aligned[i] );
+        if ( ht_status != HT_STATUS_OK )
+            return TESTING_STATUS_ERR_HASHTABLE_INTERNAL_ERR;
     }
 
     uint64_t res = 0;

@@ -9,14 +9,22 @@ enum HashtableStatus
     HT_STATUS_OK,
     HT_STATUS_ERROR_MEM_ALLOC,
     HT_STATUS_ERROR_ATTEMPT_TO_CTOR_NON_EMPTY,
-    HT_STATUS_ERROR_DEDLIST_INTERNAL_ERROR,
+    HT_STATUS_ERROR_HT_ELEM_LIST_IS_FULL,
 };
 
+//! @attention MUST BE BIGGER THAN MAX LOAD FACTOR FOR SPECIFIC INPUT!
+const size_t HT_ELEM_ARRAY_LEN = 8;
+
+struct HashtableElem
+{
+    __m256i    words[HT_ELEM_ARRAY_LEN] = {};
+    uint32_t repeats[HT_ELEM_ARRAY_LEN] = {};
+};
 
 struct Hashtable
 {
-    Dedlist *table  = NULL;
-    size_t size     = 0;
+    HashtableElem *table  = NULL;
+    size_t size           = 0;
 
     hash_func_t hash_func = NULL;
 };

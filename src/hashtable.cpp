@@ -126,7 +126,6 @@ uint64_t hashtable_find( Hashtable *ht, const __m256i *word )
 
     Dedlist *dedlist_ptr = &ht->table[hash];
 
-    // TODO - разыменовать указатель word здесь в локальную переменную.
     int list_ind = find_wordcount( dedlist_ptr, word );
     if (list_ind == -1)
     {

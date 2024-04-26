@@ -13,6 +13,7 @@ if len(sys.argv) != 2:
 file = open(sys.argv[1])
 
 str_nums = file.read().splitlines()
+str_nums = [x.replace(',', '.') for x in str_nums ]
 
 nums = list(map( float, str_nums ) )
 
@@ -24,4 +25,4 @@ rel_err_avg = abs_err_avg / avg  * 100
 
 print( f"Average: {avg}" )
 print( f"Abs error of average: {abs_err_avg}" )
-print( f"Rel error of average: {rel_err_avg}" )
+print( f"Rel error of average: {rel_err_avg}%" )

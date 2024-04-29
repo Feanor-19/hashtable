@@ -236,7 +236,7 @@ inline size_t get_ht_elem_len( const HashtableElem *ht_elem )
             return ind;
     }
 
-    return (size_t)-1;
+    return ht_elem->curr_capacity;
 }
 
 HashtableStatus hashtable_get_distribution( Hashtable *ht, size_t *distr )

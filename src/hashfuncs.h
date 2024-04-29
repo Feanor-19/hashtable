@@ -17,6 +17,8 @@ hash_t hash_ror_xor( const uint8_t *data, size_t data_size );
 
 hash_t hash_murmur3( const uint8_t *data, size_t data_size );
 
+hash_t hash_crc32( const uint8_t *data, size_t data_size );
+
 
 struct HashFuncDef
 {

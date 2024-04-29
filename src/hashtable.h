@@ -12,13 +12,14 @@ enum HashtableStatus
     HT_STATUS_ERROR_HT_ELEM_LIST_IS_FULL,
 };
 
-//! @attention MUST BE BIGGER THAN MAX LOAD FACTOR FOR SPECIFIC INPUT!
-const uint8_t HT_ELEM_ARRAY_LEN = 16;
+const size_t HT_DEFAULT_ELEM_ARRAY_LEN = 8;
 
 struct HashtableElem
 {
-    __m256i    words[HT_ELEM_ARRAY_LEN] = {};
-    uint32_t repeats[HT_ELEM_ARRAY_LEN] = {};
+    __m256i*    words = {};
+    uint32_t* repeats = {};
+
+    size_t curr_capacity = 0;
 };
 
 struct Hashtable

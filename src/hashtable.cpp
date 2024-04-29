@@ -14,7 +14,7 @@ HashtableStatus hashtable_ctor( Hashtable *ht, size_t ht_size, hash_func_t hash_
     if (ht->table || ht->size || ht->hash_func)
         return HT_STATUS_ERROR_ATTEMPT_TO_CTOR_NON_EMPTY;
 
-    ht->table = (HashtableElem *) calloc( ht_size, sizeof(HashtableElem) );
+    ht->table = (HashtableElem *) aligned_alloc( sizeof(__m256i), ht_size*sizeof(HashtableElem) );
     if (!ht->table)
         return HT_STATUS_ERROR_MEM_ALLOC;
 
@@ -53,7 +53,7 @@ inline int find_wordcount( HashtableElem *ht_elem, const __m256i *search_word_al
     for ( size_t ind = 0; ind < HT_ELEM_ARRAY_LEN; ind++ )
     {
         if ( opt_256_memcmp( ht_elem->words[ind], *search_word_aligned ) )
-            return ind;
+            return (int) ind;
     }
 
     return -1;
@@ -64,7 +64,7 @@ inline int find_wordcount( HashtableElem *ht_elem, const __m256i *search_word_al
 //! WITH ZERO-CHAR ('\0')!
 inline bool is_word_free( const __m256i *word )
 {
-    return *((char*) word) == 0;
+    return *((const char*) word) == 0;
 }
 
 //! @brief Appends given element in the first from the left free "words" element
@@ -135,7 +135,7 @@ inline uint8_t get_ht_elem_len( const HashtableElem *ht_elem )
 {
     assert(ht_elem);
 
-    for ( size_t ind = 0; ind < HT_ELEM_ARRAY_LEN; ind++ )
+    for ( uint8_t ind = 0; ind < HT_ELEM_ARRAY_LEN; ind++ )
     {
         if ( is_word_free( &ht_elem->words[ind] ) )
             return ind;

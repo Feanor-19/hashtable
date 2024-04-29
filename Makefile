@@ -35,7 +35,7 @@ OBJFILES_DEDLIST = $(patsubst $(DEDLIST_SRC)/%,$(DEDLIST_OBJ)/%,$(SOURCES_DEDLIS
 
 OPTIMIZE		= -O3
 BASE_LINK		= $(CC) -o $@ $(OPTIMIZE) $(CFLAGS) $^
-BASE_CMPL		= $(CC) -c $(OPTIMIZE) $(CFLAGS) -masm=intel -march=native -I $(DEDLIST_SRC) -o $@ $<
+BASE_CMPL		= $(CC) -c $(OPTIMIZE) $(CFLAGS) -masm=intel -march=native -o $@ $<
 
 $(OUT) : $(OBJFILES) $(OBJFILES_DEDLIST)
 	$(BASE_LINK)
@@ -73,7 +73,7 @@ make_asm:
 
 .PHONY: for_prof
 for_prof:
-	$(CC) $(OPTIMIZE) -g -march=native -o $(OUT) $(SOURCES) -I $(DEDLIST_SRC) $(SOURCES_DEDLIST)
+	$(CC) $(OPTIMIZE) -g -march=native -o $(OUT) $(SOURCES)
 
 .PHONY: perf_record
 perf_record: for_prof

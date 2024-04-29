@@ -13,7 +13,7 @@ enum HashtableStatus
 };
 
 //! @attention MUST BE BIGGER THAN MAX LOAD FACTOR FOR SPECIFIC INPUT!
-const size_t HT_ELEM_ARRAY_LEN = 8;
+const uint8_t HT_ELEM_ARRAY_LEN = 16;
 
 struct HashtableElem
 {

@@ -66,13 +66,15 @@ TestingStatus run_all_hash_func_tests( WordsList words_list, const char *out_dir
     for (size_t hash_func_ind = 0; hash_func_ind < HASH_FUNCS_COUNT; hash_func_ind++)
     {
         printf("Testing %s...\n", HASH_FUNCS_LIST[hash_func_ind].hash_func_name);
-        run_hash_func_test( HASH_FUNCS_LIST[hash_func_ind].hash_func, words_list, &distr, ht_size );
+        status = run_hash_func_test( HASH_FUNCS_LIST[hash_func_ind].hash_func, words_list, &distr, ht_size );
+        if (status != TESTING_STATUS_OK)
+            break;
         write_distr_into_file( distr, out_dir, HASH_FUNCS_LIST[hash_func_ind].hash_func_name );
         printf("Done!\n");
     }
 
     Distribution_dtor(&distr);
-    return TESTING_STATUS_OK;
+    return status;
 }
 
 TestingStatus run_hash_func_test( hash_func_t hash_func, WordsList input, 
@@ -88,7 +90,9 @@ TestingStatus run_hash_func_test( hash_func_t hash_func, WordsList input,
 
     for (size_t i = 0; i < input.words_n; i++)
     {
-        hashtable_insert( &ht, &input.words_aligned[i] );
+        ht_status = hashtable_insert( &ht, &input.words_aligned[i] );
+        if (ht_status != HT_STATUS_OK)
+            return TESTING_STATUS_ERR_HASHTABLE_INTERNAL_ERR;
     }
 
     ht_status = hashtable_get_distribution( &ht, out_distr->distr );
@@ -132,7 +136,6 @@ TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list,
     if (ht_status != HT_STATUS_OK)
         return TESTING_STATUS_ERR_HASHTABLE_INTERNAL_ERR;
 
-    HashtableStatus ht_status = HT_STATUS_OK;
     for (size_t i = 0; i < words_list.words_n; i++)
     {
         ht_status = hashtable_insert( &ht, &words_list.words_aligned[i] );

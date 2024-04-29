@@ -1,13 +1,11 @@
 #ifndef HASHTABLE_COMMON
 #define HASHTABLE_COMMON
 
-#include "dedlist.h"
+#include "defines.h"
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-
 
 typedef uint64_t hash_t;
 typedef hash_t (*hash_func_t)(const uint8_t *data, size_t data_size);

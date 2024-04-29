@@ -28,10 +28,6 @@ struct Distribution
 const mode_t DEFAULT_FILE_MODE = 0777;
 const size_t FILENAME_LEN      = 100;
 
-const hash_func_t PERF_TEST_HASH_FUNC = hash_murmur3;
-const size_t DEFAULT_NUM_OF_ITERS     = 150;  
-
-
 //! @brief Loads given 'input' into a hashtable of given 'ht_size', which uses 
 //! specified 'hash_func', and then returns the resulting distribution (in 'out_distr').
 //! @attention 'out_distr' must be an already allocated array of size 'ht_size'! 

@@ -2,14 +2,12 @@
 #define HASHTABLE_COMMON
 
 #include "defines.h"
+#include "hashfuncs.h"
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef uint64_t hash_t;
-typedef hash_t (*hash_func_t)(const uint8_t *data, size_t data_size);
-#define SPECF_HASH_T "%lu"
 
 
 const uint64_t DEFAULT_HASH_TABLE_SIZE  = 10271; // NOTE - for Les Miserables Vol 1

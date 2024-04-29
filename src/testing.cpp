@@ -132,7 +132,7 @@ void Distribution_dtor( Distribution *distr )
 TestingStatus run_search_perf_test( WordsList words_list, WordsList search_list, size_t ht_size )
 {
     Hashtable ht = {};
-    HashtableStatus ht_status = hashtable_ctor( &ht, ht_size, PERF_TEST_HASH_FUNC );
+    HashtableStatus ht_status = hashtable_ctor( &ht, ht_size, hash_crc32 );
     if (ht_status != HT_STATUS_OK)
         return TESTING_STATUS_ERR_HASHTABLE_INTERNAL_ERR;
 

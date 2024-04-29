@@ -209,7 +209,7 @@ uint64_t hashtable_find( Hashtable *ht, const __m256i *word )
     assert(ht);
     assert(word);
 
-    hash_t hash = hash_murmur3( (const uint8_t*)word, sizeof(*word) );
+    hash_t hash = hash_crc32( (const uint8_t*)word, sizeof(*word) );
 
     hash = hash % DEFAULT_HASH_TABLE_SIZE;
 

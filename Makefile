@@ -73,7 +73,7 @@ make_asm:
 
 .PHONY: for_prof
 for_prof:
-	$(CC) $(OPTIMIZE) -g -march=native -o $(OUT) $(SOURCES)
+	$(CC) $(OPTIMIZE) -g -march=native -masm=intel -o $(OUT) $(SOURCES)
 
 .PHONY: perf_record
 perf_record: for_prof

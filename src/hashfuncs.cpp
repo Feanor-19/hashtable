@@ -126,9 +126,3 @@ hash_t hash_murmur3( const uint8_t *data, size_t data_size )
 
     return hash;
 }
-
-hash_t hash_crc32( const uint8_t *data, size_t data_size )
-{
-
-    return 0;
-}

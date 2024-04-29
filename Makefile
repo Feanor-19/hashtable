@@ -82,7 +82,7 @@ perf_record: for_prof
 
 .PHONY: perf_report
 perf_report:
-	sudo perf report -n
+	sudo perf report -n -f
 
 .PHONY: show_freq_policy
 show_freq_policy:
